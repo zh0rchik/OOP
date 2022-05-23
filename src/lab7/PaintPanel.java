@@ -18,116 +18,86 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class PaintPanel extends JPanel {
-	int LVL_WIDTH = 10;
-	int LVL_HEIGHT = 10;
+	int width = 0;
+	int height = 0;
 	
-	private int[][] arr_lvl1 = new int[LVL_HEIGHT][LVL_WIDTH];
-	private int[][] arr_lvl2 = new int[LVL_HEIGHT][LVL_WIDTH];
-	private int[][] arr_lvl3 = new int[LVL_HEIGHT][LVL_WIDTH];
-	private int[][] playerId1 = new int[LVL_HEIGHT][LVL_WIDTH];
-	private int[][] playerId2 = new int[LVL_HEIGHT][LVL_WIDTH];
-	private int[][] playerId3 = new int[LVL_HEIGHT][LVL_WIDTH];
-	
+	private int[][] arr_lvl = null;
+	private int[][] playerId = null;
+
 	private int lvl = 1;
 	private int x = 48;
 	private int y = 48;
 	private int step = 48;
-	private int xPos = 1;
-	private int yPos = 1;
+	private int xPos = 0;
+	private int yPos = 0;
 	
 	public PaintPanel() {
-		Scanner Scanner1 = null;
-		Scanner Scanner2 = null;
-		Scanner Scanner3 = null;
-		Scanner Scanner4 = null;
-		Scanner Scanner5 = null;
-		Scanner Scanner6 = null;
+		Scanner scanner = null;
+		
 		try {
-			Scanner1 = new Scanner(new File("lvl1.txt"));
-			Scanner2 = new Scanner(new File("lvl2.txt"));
-			Scanner3 = new Scanner(new File("lvl3.txt"));
-			
-			Scanner4 = new Scanner(new File("lvl1.txt"));
-			Scanner5 = new Scanner(new File("lvl2.txt"));
-			Scanner6 = new Scanner(new File("lvl3.txt"));
+			scanner = new Scanner(new File("lvl1.txt"));
+			width = scanner.nextInt();
+			height = scanner.nextInt();
+			xPos = scanner.nextInt();
+			yPos = scanner.nextInt();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 		
-		for (int x = 0; x < LVL_HEIGHT ; x++) {
-			for (int y = 0; y <LVL_WIDTH ; y++) {
-				arr_lvl1[x][y] = Scanner1.nextInt();
-				arr_lvl2[x][y] = Scanner2.nextInt();
-				arr_lvl3[x][y] = Scanner3.nextInt();
-				playerId1[x][y] = Scanner4.nextInt();
-				playerId2[x][y] = Scanner5.nextInt();
-				playerId3[x][y] = Scanner6.nextInt();
+		arr_lvl = new int[height][width];
+		playerId = new int[height][width];
+		for (int x = 0; x < height ; x++) {
+			for (int y = 0; y < width ; y++) {
+				int val = scanner.nextInt();
+				arr_lvl[x][y] = val;
+				playerId[x][y] = val;
 			}
 		}
-		Scanner1.close();
-		Scanner2.close();
-		Scanner3.close();
-		Scanner4.close();
-		Scanner5.close();
-		Scanner6.close();
+		scanner.close();
+	}
+	
+	public void loadLevel(int level) {
+		Scanner scanner = null;
+		
+		try {
+			scanner = new Scanner(new File(String.format("lvl%d.txt", level)));
+			width = scanner.nextInt();
+			height = scanner.nextInt();
+			xPos = scanner.nextInt();
+			yPos = scanner.nextInt();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		arr_lvl = new int[height][width];
+		playerId = new int[height][width];
+		for (int x = 0; x < height ; x++) {
+			for (int y = 0; y < width ; y++) {
+				int val = scanner.nextInt();
+				arr_lvl[x][y] = val;
+				playerId[x][y] = val;
+			}
+		}
+		scanner.close();
+		
 	}
 
 	
 	
 	public void moveLeft() {
-		
-		if (lvl == 1) {
-			if (playerId1[yPos][xPos - 1] == 1) {        //земл€
-				x -= step;
-				xPos -= 1;
-			}
-			else if (playerId1[yPos][xPos - 1] == 2) {   //лава
-				x -= step;
-				xPos -= 1;
-				gameOver();
-			}
-			else if (playerId1[yPos][xPos - 1] == 3) {   //золото
-				x -= step;
-				xPos -= 1;
-				nextLvl();
-			}
+		if (playerId[yPos][xPos - 1] == 1) {        //земл€
+			x -= step;
+			xPos -= 1;
 		}
-		
-		
-		
-		if (lvl == 2) {
-			if (playerId2[yPos][xPos - 1] == 1) {        //земл€
-				x -= step;
-				xPos -= 1;
-			}
-			else if (playerId2[yPos][xPos - 1] == 2) {   //лава
-				x -= step;
-				xPos -= 1;
-				gameOver();
-			}
-			else if (playerId2[yPos][xPos - 1] == 3) {   //золото
-				x -= step;
-				xPos -= 1;
-				nextLvl();
-			}
+		else if (playerId[yPos][xPos - 1] == 2) {   //лава
+			x -= step;
+			xPos -= 1;
+			gameOver();
 		}
-		
-		
-		if (lvl == 3) {
-			if (playerId3[yPos][xPos - 1] == 1) {        //земл€
-				x -= step;
-				xPos -= 1;
-			}
-			else if (playerId3[yPos][xPos - 1] == 2) {   //лава
-				x -= step;
-				xPos -= 1;
-				gameOver();
-			}
-			else if (playerId3[yPos][xPos - 1] == 3) {   //золото
-				x -= step;
-				xPos -= 1;
-				nextLvl();
-			}
+		else if (playerId[yPos][xPos - 1] == 3) {   //золото
+			x -= step;
+			xPos -= 1;
+			nextLvl();
 		}
 		
 		
@@ -136,55 +106,19 @@ public class PaintPanel extends JPanel {
 	
 	public void moveRight() {
 		
-		if (lvl == 1) {
-			if (playerId1[yPos][xPos + 1] == 1) {
-				x += step;
-				xPos += 1;
-			}
-			else if (playerId1[yPos][xPos + 1] == 2) {   //лава
-				x += step;
-				xPos += 1;
-				gameOver();
-			}
-			else if (playerId1[yPos][xPos + 1] == 3) {   //золото
-				x += step;
-				xPos += 1;
-				nextLvl();
-			}
+		if (playerId[yPos][xPos + 1] == 1) {
+			x += step;
+			xPos += 1;
 		}
-		
-		if (lvl == 2) {
-			if (playerId2[yPos][xPos + 1] == 1) {
-				x += step;
-				xPos += 1;
-			}
-			else if (playerId2[yPos][xPos + 1] == 2) {   //лава
-				x += step;
-				xPos += 1;
-				gameOver();
-			}
-			else if (playerId2[yPos][xPos + 1] == 3) {   //золото
-				x += step;
-				xPos += 1;
-				nextLvl();
-			}
+		else if (playerId[yPos][xPos + 1] == 2) {   //лава
+			x += step;
+			xPos += 1;
+			gameOver();
 		}
-		
-		if (lvl == 3) {
-			if (playerId3[yPos][xPos + 1] == 1) {
-				x += step;
-				xPos += 1;
-			}
-			else if (playerId3[yPos][xPos + 1] == 2) {   //лава
-				x += step;
-				xPos += 1;
-				gameOver();
-			}
-			else if (playerId3[yPos][xPos + 1] == 3) {   //золото
-				x += step;
-				xPos += 1;
-				nextLvl();
-			}
+		else if (playerId[yPos][xPos + 1] == 3) {   //золото
+			x += step;
+			xPos += 1;
+			nextLvl();
 		}
 		
 		repaint();
@@ -193,56 +127,19 @@ public class PaintPanel extends JPanel {
 	
 	public void moveUp() {
 		
-		if (lvl == 1) {
-			if (playerId1[yPos - 1][xPos] == 1) {
-				y -= step;
-				yPos -= 1;
-			}
-			else if (playerId1[yPos - 1][xPos] == 2) {   //лава
-				x -= step;
-				yPos -= 1;
-				gameOver();
-			}
-			else if (playerId1[yPos - 1][xPos] == 3) {   //золото
-				x -= step;
-				yPos -= 1;
-				nextLvl();
-			}
+		if (playerId[yPos - 1][xPos] == 1) {
+			y -= step;
+			yPos -= 1;
 		}
-		
-		if (lvl == 2) {
-			if (playerId2[yPos - 1][xPos] == 1) {
-				y -= step;
-				yPos -= 1;
-			}
-			else if (playerId2[yPos - 1][xPos] == 2) {   //лава
-				x -= step;
-				yPos -= 1;
-				gameOver();
-			}
-			else if (playerId2[yPos - 1][xPos] == 3) {   //золото
-				x -= step;
-				yPos -= 1;
-				nextLvl();
-			}
+		else if (playerId[yPos - 1][xPos] == 2) {   //лава
+			x -= step;
+			yPos -= 1;
+			gameOver();
 		}
-		
-		if (lvl == 3) {
-			if (playerId3[yPos - 1][xPos] == 1) {
-				y -= step;
-				yPos -= 1;
-			}
-			else if (playerId3[yPos - 1][xPos] == 2) {   //лава
-				x -= step;
-				yPos -= 1;
-				gameOver();
-			}
-			else if (playerId3[yPos - 1][xPos] == 3) {   //золото
-				x -= step;
-				yPos -= 1;
-				nextLvl();
-			}
-
+		else if (playerId[yPos - 1][xPos] == 3) {   //золото
+			x -= step;
+			yPos -= 1;
+			nextLvl();
 		}
 		
 		repaint();
@@ -250,56 +147,20 @@ public class PaintPanel extends JPanel {
 	
 	public void moveDown() {
 		
-		if (lvl == 1) {
-			if (playerId1[yPos + 1][xPos] == 1) {
-				y += step;
-				yPos += 1;
-			}
-			else if (playerId1[yPos + 1][xPos] == 2) {   //лава
-				x += step;
-				yPos += 1;
-				gameOver();
-			}
-			else if (playerId1[yPos + 1][xPos] == 3) {   //золото
-				x += step;
-				yPos += 1;
-				nextLvl();
-			}			
+		if (playerId[yPos + 1][xPos] == 1) {
+			y += step;
+			yPos += 1;
 		}
-		
-		if (lvl == 2) {
-			if (playerId2[yPos + 1][xPos] == 1) {
-				y += step;
-				yPos += 1;
-			}
-			else if (playerId2[yPos + 1][xPos] == 2) {   //лава
-				x += step;
-				yPos += 1;
-				gameOver();
-			}
-			else if (playerId2[yPos + 1][xPos] == 3) {   //золото
-				x += step;
-				yPos += 1;
-				nextLvl();
-			}			
+		else if (playerId[yPos + 1][xPos] == 2) {   //лава
+			x += step;
+			yPos += 1;
+			gameOver();
 		}
-		
-		if (lvl == 3) {
-			if (playerId3[yPos + 1][xPos] == 1) {
-				y += step;
-				yPos += 1;
-			}
-			else if (playerId3[yPos + 1][xPos] == 2) {   //лава
-				x += step;
-				yPos += 1;
-				gameOver();
-			}
-			else if (playerId3[yPos + 1][xPos] == 3) {   //золото
-				x += step;
-				yPos += 1;
-				nextLvl();
-			}			
-		}
+		else if (playerId[yPos + 1][xPos] == 3) {   //золото
+			x += step;
+			yPos += 1;
+			nextLvl();
+		}	
 		
 		repaint();
 	}
@@ -311,6 +172,7 @@ public class PaintPanel extends JPanel {
 		x = 48;
 		y = 48;
 		lvl = 1;
+		loadLevel(lvl);
 		repaint();
 		JOptionPane.showMessageDialog(null, "¬ы проиграли, попробуйте снова!", "”ведомление", JOptionPane.INFORMATION_MESSAGE);
 	}
@@ -323,14 +185,17 @@ public class PaintPanel extends JPanel {
 		lvl++;
 		if (lvl > 3) {
 			lvl = 1;
+			loadLevel(lvl);
 			JOptionPane.showMessageDialog(null, "¬ы прошли игру!", "”ведомление", JOptionPane.INFORMATION_MESSAGE);
 			repaint();
 		}
 		else if (lvl == 3) {
+			loadLevel(lvl);
 			JOptionPane.showMessageDialog(null, "”ровень є" + lvl + "!", "”ведомление", JOptionPane.INFORMATION_MESSAGE);
 			repaint();
 		}		
 		else {
+			loadLevel(lvl);
 			JOptionPane.showMessageDialog(null, "”ровень є" + lvl + "!", "”ведомление", JOptionPane.INFORMATION_MESSAGE);
 			repaint();
 		}
@@ -354,71 +219,23 @@ public class PaintPanel extends JPanel {
 			e.printStackTrace();
 		}
 		
-		if (lvl == 1) {
-			
-			for (int i = 0; i < arr_lvl1.length; i++) {
-				int top = i * 48;
-				for (int j = 0; j < arr_lvl1[i].length; j++) {
-					int left = j * 48;
-					if (arr_lvl1[i][j] == 0) {                                  //камень
-						g2D.drawImage(blockStoneImage, null, left, top);
-					}
-					else if (arr_lvl1[i][j] == 1) {                             //земл€
-						g2D.drawImage(blockDirtImage, null, left, top);
-					}
-					else if (arr_lvl1[i][j] == 2) {                             //лава
-						g2D.drawImage(blockHellStone, null, left, top);
-					}
-					else if (arr_lvl1[i][j] == 3) {                             //финиш
-						g2D.drawImage(blockGoldOre, null, left, top);
-					}
+		for (int i = 0; i < arr_lvl.length; i++) {
+			int top = i * 48;
+			for (int j = 0; j < arr_lvl[i].length; j++) {
+				int left = j * 48;
+				if (arr_lvl[i][j] == 0) {                                  //камень
+					g2D.drawImage(blockStoneImage, null, left, top);
+				}
+				else if (arr_lvl[i][j] == 1) {                             //земл€
+					g2D.drawImage(blockDirtImage, null, left, top);
+				}
+				else if (arr_lvl[i][j] == 2) {                             //лава
+					g2D.drawImage(blockHellStone, null, left, top);
+				}
+				else if (arr_lvl[i][j] == 3) {                             //финиш
+					g2D.drawImage(blockGoldOre, null, left, top);
 				}
 			}
-			
-		}
-		else if (lvl == 2) {
-			
-			for (int i = 0; i < arr_lvl2.length; i++) {
-				int top = i * 48;
-				for (int j = 0; j < arr_lvl2[i].length; j++) {
-					int left = j * 48;
-					if (arr_lvl2[i][j] == 0) {                                  //камень
-						g2D.drawImage(blockStoneImage, null, left, top);
-					}
-					else if (arr_lvl2[i][j] == 1) {                             //земл€
-						g2D.drawImage(blockDirtImage, null, left, top);
-					}
-					else if (arr_lvl2[i][j] == 2) {                             //лава
-						g2D.drawImage(blockHellStone, null, left, top);
-					}
-					else if (arr_lvl2[i][j] == 3) {                             //финиш
-						g2D.drawImage(blockGoldOre, null, left, top);
-					}
-				}
-			}
-			
-		}
-		else if (lvl == 3) {
-			
-			for (int i = 0; i < arr_lvl3.length; i++) {
-				int top = i * 48;
-				for (int j = 0; j < arr_lvl3[i].length; j++) {
-					int left = j * 48;
-					if (arr_lvl3[i][j] == 0) {                                  //камень
-						g2D.drawImage(blockStoneImage, null, left, top);
-					}
-					else if (arr_lvl3[i][j] == 1) {                             //земл€
-						g2D.drawImage(blockDirtImage, null, left, top);
-					}
-					else if (arr_lvl3[i][j] == 2) {                             //лава
-						g2D.drawImage(blockHellStone, null, left, top);
-					}
-					else if (arr_lvl3[i][j] == 3) {                             //финиш
-						g2D.drawImage(blockGoldOre, null, left, top);
-					}
-				}
-			}
-			
 		}
 		
 		//игрок
